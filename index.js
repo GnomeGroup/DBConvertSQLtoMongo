@@ -1,5 +1,9 @@
 const NK = require( "nk-node" );
 const mysql = require( "mysql" );
+const configFileName = ( __dirname + "/config.json" );
+if( !NK.files.exists( configFileName ) )  {
+  NK.files.write( configFileName, NK.files.read( __dirname + "/default-config.json" ) );
+}
 const config = require( "./config" );
 
 NK.start( true, null, null, null, () => NK.db.start( config.mongo.name, config.mongo.host, config.mongo.port, () => {
@@ -38,5 +42,5 @@ NK.start( true, null, null, null, () => NK.db.start( config.mongo.name, config.m
     }
   };
   loadNextTable();
-})));
+}));
 //add ability for SQLLite and MSSQL
