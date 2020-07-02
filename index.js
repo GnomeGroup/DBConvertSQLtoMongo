@@ -6,6 +6,7 @@ if( !NK.files.exists( configFileName ) )  {
 }
 const config = require( "./config" );
 
+if( config.enabled ) {
 NK.start( true, null, null, null, () => NK.db.start( config.mongo.name, config.mongo.host, config.mongo.port, () => {
   let mySQLConnection = mysql.createConnection( config.mysql );
   mySQLConnection.connect();
@@ -43,4 +44,5 @@ NK.start( true, null, null, null, () => NK.db.start( config.mongo.name, config.m
   };
   loadNextTable();
 }));
+};
 //add ability for SQLLite and MSSQL

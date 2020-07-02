@@ -1,4 +1,5 @@
 {
+  "enabled": false,
   "mongo": {
     "host": "localhost",
     "port": 27107,
