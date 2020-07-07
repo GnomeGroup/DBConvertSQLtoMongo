@@ -23,7 +23,7 @@ cp defaut-config.json config.json
 
 Once you have the file, please edit the MongoDB Conenction information as well as the SOURCE DATABASE object, if you want to change the driver from MySQL to MSSQL or vice-versa, change the name of the element from mysql to mssql
 
-``json
+```json
 	"mssql": {
 		"host": "localhost",
 		"user": "billy",
