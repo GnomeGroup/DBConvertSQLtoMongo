@@ -1,55 +1,101 @@
-const NK = require( "nk-node" );
-const mysql = require( "mysql" );
-const configFileName = ( __dirname + "/config.json" );
-if( !NK.files.exists( configFileName ) )  {
-  NK.files.write( configFileName, NK.files.read( __dirname + "/default-config.json" ) );
-}
-const config = require( "./config" );
+const NK = require( 'nk-node' )
+const mysql = require( 'mysql' )
+const mssql = require( 'mssql' )
 
-if( config.enabled ) {
-  NK.start( true, null, null, null, () => NK.db.start( config.mongo.name, config.mongo.host, config.mongo.port, () => {
-    let mySQLConnection = mysql.createConnection( config.mysql );
-    mySQLConnection.connect();
-    let tables = NK.objCopy( config.tables );
-    let loadNextTable = () => {
-      let thisTable = ( ( tables && ( tables.length > 0 ) )? tables.shift(): null );
-      if( thisTable ) {
-        if( thisTable.copyData ) {
-          mySQLConnection.query( ( "SELECT * FROM " + thisTable.name ), ( error, results, fields ) => {
-            let loadArray = [];
-            if( !error && ( results.length > 0 ) )  {
-              for( let i = 0; i < results.length; i++ )  {
-                for( let x in results[i] )  {
-                  if( thisTable.mapToBool && thisTable.mapToBool.includes( x ) )  {
-                    results[i][x] = ( parseInt( results[i][x] ) == 1 )
-                  }
-                }
-                loadArray.push( results[i] )
-              }
-            }
-            let sendToMongo = () => {
-              sendArray = loadArray.slice( 0, thisTable.batchSize );
-              if( loadArray.length > thisTable.batchSize )  {
-                loadArray = loadArray.slice( thisTable.batchSize );
-              }  else {
-                loadArray = []
-              }
-              if( sendArray.length > 0 )  {
-                NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() );
-              } else {
-                loadNextTable();
-              }
-            };
-            sendToMongo();
-          });
-        } else {
-          loadNextTable();
-        }
+const mySQLTransport = {
+  obj: null,
+  connect: ( configuration ) => {
+    mySQLTransport.obj = mysql.createConnection( configuration )
+    mySQLTransport.obj.connect()
+  },
+  query: ( sql, callback ) => {
+    if( mySQLTransport.obj )  {
+        mySQLTransport.obj.query( sql, ( error, results, fields ) => callback( error? []: results ) )
+    } else {
+      callback( [] )
+    }
+  },
+  close: () => mySQLTransport.obj.end()
+}
+
+const msSQLTransport = {
+  obj: null,
+  connect: async ( configuration ) => {
+    msSQLTransport.obj = await mssql.connect( 'mssql://' + escape( configuration.user ) + ':' + escape( configuration.password ) + '@' + escape( configuration.host ) + '/' + escape( configuration.database ) )
+  },
+  query: async ( sql, callback ) => {
+    if( msSQLTransport.obj )  {
+      let result = await mssql.query( sql )
+      if( !result.err && result.res.recordsets )	{
+  			callback( result.res.recordsets[0] )
       } else {
-        mySQLConnection.end();
+        callback( [] )
       }
-    };
-    loadNextTable();
-  }));
-};
-//add ability for SQLLite and MSSQL
+    } else {
+      callback( [] )
+    }
+  },
+  close: () => {}
+}
+
+const configFileName = ( __dirname + '/config.json' )
+if( !NK.files.exists( configFileName ) )  {
+  NK.files.write( configFileName, NK.files.read( __dirname + '/default-config.json' ) )
+}
+const config = require( './config' )
+
+const transporter = ( config.mysql? mySQLTransport: ( config.mssql? msSQLTransport: null ) )
+const configObject = ( config.mysql? config.mysql: ( config.mssql? config.mssql: null ) )
+
+if( config.enabled && transporter ) {
+  NK.start( true, config.mongo.name, null, null, () => {
+    transporter.connect( configObject )
+    let tables = NK.objCopy( config.tables )
+    let loadNextTable = () => {
+      let thisTable = ( ( tables && ( tables.length > 0 ) )? tables.shift(): null )
+      if( thisTable ) {
+        NK.db.delete( config.mongo.name, thisTable.name, {}, () => {
+          if( thisTable.copyData ) {
+            transporter.query( ( 'SELECT * FROM ' + thisTable.name ), ( results ) => {
+              let loadArray = []
+              if( !error && ( results.length > 0 ) )  {
+                for( let i = 0; i < results.length; i++ )  {
+                  for( let x in results[i] )  {
+                    if( thisTable.mapToBool && thisTable.mapToBool.includes( x ) )  {
+                      results[i][x] = ( parseInt( results[i][x] ) == 1 )
+                    }
+                  }
+                  loadArray.push( results[i] )
+                }
+              }
+              let counter = 0
+              let sendToMongo = () => {
+                sendArray = loadArray.slice( 0, thisTable.batchSize )
+                if( loadArray.length > thisTable.batchSize )  {
+                  loadArray = loadArray.slice( thisTable.batchSize )
+                }  else {
+                  loadArray = []
+                }
+                if( sendArray.length > 0 )  {
+                  counter += sendArray.length
+                  console.log( 'Added ' + counter + ' rows to ' + thisTable.name )
+                  NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() )
+                } else {
+                  loadNextTable()
+                }
+              }
+              sendToMongo()
+            })
+          } else {
+            loadNextTable()
+          }
+        })
+      } else {
+        transporter.close()
+        process.exit()
+      }
+    }
+    loadNextTable()
+  })
+}
+//add ability for SQLLite

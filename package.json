@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Encke/MySQL-to-MongoDB-Importer#readme",
   "dependencies": {
+    "mssql": "^6.2.0",
     "mysql": "^2.18.1",
     "nk-node": "^1.1.7",
     "save": "^2.4.0"
