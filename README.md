@@ -24,18 +24,18 @@ cp defaut-config.json config.json
 Once you have the file, please edit the MongoDB Conenction information as well as the SOURCE DATABASE object, if you want to change the driver from MySQL to MSSQL or vice-versa, change the name of the element from mysql to mssql
 
 ```json
-	"mssql": {
-		"host": "localhost",
-		"user": "billy",
-		"password": "myGr3@tP@s$w0rd",
-		"database": "webDATA"
-	}
+"mssql": {
+	"host": "localhost",
+	"user": "billy",
+	"password": "myGr3@tP@s$w0rd",
+	"database": "webDATA"
+}
 ```
 
 Then edit the tables, adding a new element for each table you wish to import. There is only one manual mapping needed, which is the BIT / TINYINT(1) to BOOLEAN ... this must be done in the table line in the element named mapToBool, place all the field names there and they will be mapped from INT to BOOL.
 
 ```json
-{ "mapToBool": [ "field1", "field2", "is_active" ] }
+"mapToBool": [ "field1", "field2", "is_active" ]
 ```
 
 ## Running the import:
