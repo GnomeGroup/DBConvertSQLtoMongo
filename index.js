@@ -98,4 +98,3 @@ if( config.enabled && transporter ) {
     loadNextTable()
   })
 }
-//add ability for SQLLite
