@@ -25,10 +25,10 @@ Once you have the file, please edit the MongoDB Conenction information as well a
 
 ```json
 "mssql": {
-	"host": "localhost",
-	"user": "billy",
-	"password": "myGr3@tP@s$w0rd",
-	"database": "webDATA"
+  "host": "localhost",
+  "user": "billy",
+  "password": "myGr3@tP@s$w0rd",
+  "database": "webDATA"
 }
 ```
 
