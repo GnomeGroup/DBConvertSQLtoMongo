@@ -15,7 +15,8 @@
     {
       "name": "table1",
       "copyData": true,
-      "batchSize": 20
+      "batchSize": 20,
+      "mapToBool": [ "is_valid" ]
     }
   ]
 }

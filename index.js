@@ -16,19 +16,27 @@ if( config.enabled ) {
       if( thisTable ) {
         if( thisTable.copyData ) {
           mySQLConnection.query( ( "SELECT * FROM " + thisTable.name ), ( error, results, fields ) => {
-            console.log(error, results, fields);
-            //for each table, get all rows
             let loadArray = [];
-
-
+            if( !error && ( results.length > 0 ) )  {
+              for( let i = 0; i < results.length; i++ )  {
+                for( let x in results[i] )  {
+                  if( thisTable.mapToBool && thisTable.mapToBool.includes( x ) )  {
+                    results[i][x] = ( parseInt( results[i][x] ) == 1 )
+                  }
+                }
+                loadArray.push( results[i] )
+              }
+            }
             let sendToMongo = () => {
-              let sendArray = NK.objCopy( loadArray );
+              sendArray = loadArray.slice( 0, thisTable.batchSize );
               if( loadArray.length > thisTable.batchSize )  {
-                sendArray = loadArray.slice( 0, thisTable.batchSize );
                 loadArray = loadArray.slice( thisTable.batchSize );
+              }  else {
+                loadArray = []
               }
               if( sendArray.length > 0 )  {
-                NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() );
+                console.log(sendArray)
+//                NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() );
               } else {
                 loadNextTable();
               }
