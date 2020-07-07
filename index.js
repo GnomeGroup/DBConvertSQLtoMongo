@@ -35,8 +35,7 @@ if( config.enabled ) {
                 loadArray = []
               }
               if( sendArray.length > 0 )  {
-                console.log(sendArray)
-//                NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() );
+                NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() );
               } else {
                 loadNextTable();
               }
