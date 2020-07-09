@@ -1,26 +1,25 @@
 {
-  "name": "mysql-to-mongodb-importer",
+  "name": "dbconvertsqltomongo",
   "version": "1.0.0",
-  "description": "Import Data from MySQL Into MongoDB",
-  "main": "index.js",
+  "description": "Import Data from MySQL or MSSQL Into MongoDB",
+  "main": "import.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node import.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Encke/MySQL-to-MongoDB-Importer.git"
+    "url": "git+https://github.com/Encke/DBConvertSQLtoMongo.git"
   },
   "author": "Encke Technologies SRL",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Encke/MySQL-to-MongoDB-Importer/issues"
+    "url": "https://github.com/Encke/DBConvertSQLtoMongo/issues"
   },
-  "homepage": "https://github.com/Encke/MySQL-to-MongoDB-Importer#readme",
+  "homepage": "https://github.com/Encke/DBConvertSQLtoMongo#readme",
   "dependencies": {
     "mssql": "^6.2.0",
     "mysql": "^2.18.1",
-    "nk-node": "^1.1.7",
-    "save": "^2.4.0"
+    "nk-node": "^1.1.12"
   }
 }

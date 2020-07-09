@@ -1,6 +1,6 @@
-# M(yS)SQL-to-MongoDB-Importer
+# DBConvertSQLtoMongo
 
-Import the full contents of any M(yS)SQL database into MongoDB in just 4 steps, no licenses.
+Import the full contents of any MySQL and / or MSSQL database into MongoDB in just 4 steps, no fees.
 
 ## Installation
 
@@ -9,7 +9,7 @@ This library uses nodeJS to install and run, please ensure your system is first 
 ```bash
 mkdir /root/importer
 cd /root/importer
-git clone https://github.com/Encke/MySQL-to-MongoDB-Importer .
+git clone https://github.com/Encke/DBConvertSQLtoMongo .
 npm i
 ```
 
@@ -21,7 +21,7 @@ Create a config.json file, using the data from defaut-config.json
 cp defaut-config.json config.json
 ```
 
-Once you have the file, please edit the MongoDB Conenction information as well as the SOURCE DATABASE object, if you want to change the driver from MySQL to MSSQL or vice-versa, change the name of the element from mysql to mssql
+Once you have the file, please edit the MongoDB Connection information as well as the SOURCE DATABASE object, if you want to change the driver from MySQL to MSSQL or vice-versa, change the name of the element from mysql to mssql
 
 ```json
 "mssql": {
