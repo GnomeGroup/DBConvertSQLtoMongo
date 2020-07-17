@@ -6,7 +6,12 @@ const mySQLTransport = {
   obj: null,
   connect: ( configuration ) => {
     mySQLTransport.obj = mysql.createConnection( configuration )
-    mySQLTransport.obj.connect()
+    mySQLTransport.obj.connect(err => {
+			if( err )	{
+        mySQLTransport.obj = null
+        console.log( err.sqlMessage )
+			}
+		})
   },
   query: ( sql, callback ) => {
     if( mySQLTransport.obj )  {
