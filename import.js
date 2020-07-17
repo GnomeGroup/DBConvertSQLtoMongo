@@ -83,7 +83,7 @@ if( config.enabled && transporter ) {
           if( thisTable.copyData ) {
             transporter.query( ( 'SELECT * FROM ' + thisTable.name ), ( results ) => {
               let loadArray = []
-              if( !error && ( results.length > 0 ) )  {
+              if( results.length > 0 )  {
                 for( let i = 0; i < results.length; i++ )  {
                   for( let x in results[i] )  {
                     if( thisTable.mapToBool && thisTable.mapToBool.includes( x ) )  {
