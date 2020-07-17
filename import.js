@@ -23,6 +23,8 @@ const mySQLTransport = {
 						fieldAliases.push( x )
 					}
 				}
+        console.log( fieldAliases )
+        process.exit()
 				for( let i = 0; i < fields.length; i++ )	{
 					fieldList[fieldAliases[i]] = fields[i].name
 				}
