@@ -105,6 +105,7 @@ if( config.enabled && transporter ) {
                 }
                 if( sendArray.length > 0 )  {
                   counter += sendArray.length
+                  console.log(sendArray)
                   console.log( 'Added ' + counter + ' rows to ' + thisTable.name )
                   NK.db.insert( config.mongo.name, thisTable.name, sendArray, () => sendToMongo() )
                 } else {
